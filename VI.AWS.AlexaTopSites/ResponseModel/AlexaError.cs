@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlexaApi.ResponseModel
+namespace VI.AWS.AlexaTopSites.ResponseModel
 {
 	[DeserializeAs(Name="Response")]
 	public class AlexaError

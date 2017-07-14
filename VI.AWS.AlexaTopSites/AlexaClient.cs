@@ -1,12 +1,12 @@
-﻿using AlexaApi.ResponseModel;
-using RestSharp;
+﻿using RestSharp;
 using RestSharp.Deserializers;
 using System;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using VI.AWS.AlexaTopSites.ResponseModel;
 
-namespace AlexaApi
+namespace VI.AWS.AlexaTopSites
 {
     public enum CategoryListingsSortBy
 	{

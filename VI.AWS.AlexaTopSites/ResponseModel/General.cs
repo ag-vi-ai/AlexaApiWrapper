@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AlexaApi.ResponseModel
+namespace VI.AWS.AlexaTopSites.ResponseModel
 {
     public class OperationRequest
 	{

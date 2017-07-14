@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AlexaApi.ResponseModel
+namespace VI.AWS.AlexaTopSites.ResponseModel
 {
     [DeserializeAs(Name = "Response")]
 	public class CategoryBrowseResponse : IEquatable<CategoryBrowseResponse>

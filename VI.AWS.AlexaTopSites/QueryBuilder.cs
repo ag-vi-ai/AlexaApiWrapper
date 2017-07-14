@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
+using RestSharp.Extensions.MonoHttp;
 
-namespace AlexaApi
+namespace VI.AWS.AlexaTopSites
 {
     internal class QueryBuilder
 	{

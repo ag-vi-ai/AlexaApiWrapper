@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace AlexaApi
+namespace VI.AWS.AlexaTopSites
 {
     [Flags]
 	public enum CategoryBrowseResponseGroup 
