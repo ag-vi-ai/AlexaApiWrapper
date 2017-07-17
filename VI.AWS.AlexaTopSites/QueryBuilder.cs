@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,23 +8,23 @@ using RestSharp.Extensions.MonoHttp;
 
 namespace VI.AWS.AlexaTopSites
 {
-    internal class QueryBuilder
+    internal class QueryBuilder : IEnumerable
 	{
-		private RestRequest _request;
+		private readonly RestRequest _request;
 
-		private Dictionary<string, object> _paramDict = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _parameters = new Dictionary<string, object>();
 
 		public QueryBuilder(RestRequest request)
 		{
 			_request = request;
 		}
 
-		public void AddParameter(string name, object value)
+		public void Add(string name, object value)
 		{
 			if (value != null)
 			{
 				_request.AddParameter(name, value);
-				_paramDict.Add(name, value);
+				_parameters.Add(name, value);
 			}
 		}
 
@@ -32,7 +33,7 @@ namespace VI.AWS.AlexaTopSites
 			get 
 			{
 				var queryString = new StringBuilder();
-				var sorted = _paramDict.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
+				var sorted = _parameters.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
 				foreach (var v in sorted)
 				{
 					if (queryString.Length > 0)
@@ -43,6 +44,11 @@ namespace VI.AWS.AlexaTopSites
 				return queryString.ToString(); 
 			}
 		}
+
+	    public IEnumerator GetEnumerator()
+	    {
+	        return _parameters.GetEnumerator();
+	    }
 	}
 
 	internal static class StringHelper
