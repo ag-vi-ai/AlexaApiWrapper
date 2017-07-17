@@ -17,11 +17,11 @@ namespace VI.AWS.AlexaTopSites
 
     public class AlexaClient
     {
-        const string baseUrl = "http://awis.amazonaws.com";
+        const string BaseUrl = "http://awis.amazonaws.com";
 
-        const string timeFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
-		const string dateFormatForUrlInfo = "dd-MMM-yyyy";
-		const string dateFormat = "yyyy-MM-dd";
+        const string TimeFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
+		const string DateFormatForUrlInfo = "dd-MMM-yyyy";
+		const string DateFormat = "yyyy-MM-dd";
 
         private readonly string _key;
         private readonly string _secretKey;
@@ -47,8 +47,9 @@ namespace VI.AWS.AlexaTopSites
         private T Execute<T>(RestRequest request) where T : new()
         {
 			LastError = null;
-            var client = new RestClient(baseUrl);
+            var client = new RestClient(BaseUrl);
             var response = client.Execute<T>(request);
+
             if (response.ErrorException != null)
             {
                 throw response.ErrorException;
@@ -78,16 +79,18 @@ namespace VI.AWS.AlexaTopSites
         public UrlInfoResponse GetUrlInfo(string url, UrlInfoResponseGroup responseGroup)
         {
             var request = new RestRequest(Method.GET);
-			request.DateFormat = dateFormatForUrlInfo;
-			var queryBuilder = new QueryBuilder(request);
-			queryBuilder.AddParameter("Action", "UrlInfo");
-			queryBuilder.AddParameter("AWSAccessKeyId", _key);
-			queryBuilder.AddParameter("SignatureMethod", "HmacSHA256");
-			queryBuilder.AddParameter("SignatureVersion", "2");
-			queryBuilder.AddParameter("Timestamp", Timestamp);
-			queryBuilder.AddParameter("Url", url);
-			queryBuilder.AddParameter("ResponseGroup", responseGroup.ToQuery());
-			request.AddParameter("Signature", Signature(queryBuilder.Query));
+			request.DateFormat = DateFormatForUrlInfo;
+            var queryBuilder = new QueryBuilder(request)
+            {
+                {"Action", "UrlInfo"},
+                {"AWSAccessKeyId", _key},
+                {"SignatureMethod", "HmacSHA256"},
+                {"SignatureVersion", "2"},
+                {"Timestamp", Timestamp},
+                {"Url", url},
+                {"ResponseGroup", responseGroup.ToQuery()}
+            };
+            request.AddParameter("Signature", Signature(queryBuilder.Query));
 			request.OnBeforeDeserialization = ErrorHandling;
 
             return Execute<UrlInfoResponse>(request);
@@ -107,17 +110,17 @@ namespace VI.AWS.AlexaTopSites
 		public TrafficHistoryResponse GetTrafficHistory(string url, int? range = 31, DateTime? start = null)
 		{
 			var request = new RestRequest(Method.GET);
-			request.DateFormat = dateFormat;
+			request.DateFormat = DateFormat;
 			var queryBuilder = new QueryBuilder(request);
-			queryBuilder.AddParameter("Action", "TrafficHistory");
-			queryBuilder.AddParameter("AWSAccessKeyId", _key);
-			queryBuilder.AddParameter("SignatureMethod", "HmacSHA256");
-			queryBuilder.AddParameter("SignatureVersion", "2");
-			queryBuilder.AddParameter("Timestamp", Timestamp);
-			queryBuilder.AddParameter("ResponseGroup", "History");
-			queryBuilder.AddParameter("Url", url);
-			queryBuilder.AddParameter("Range", range);
-			queryBuilder.AddParameter("Start", start.HasValue ? ((DateTime)start).ToString("yyyyMMdd") : null);
+			queryBuilder.Add("Action", "TrafficHistory");
+			queryBuilder.Add("AWSAccessKeyId", _key);
+			queryBuilder.Add("SignatureMethod", "HmacSHA256");
+			queryBuilder.Add("SignatureVersion", "2");
+			queryBuilder.Add("Timestamp", Timestamp);
+			queryBuilder.Add("ResponseGroup", "History");
+			queryBuilder.Add("Url", url);
+			queryBuilder.Add("Range", range);
+			queryBuilder.Add("Start", start.HasValue ? ((DateTime)start).ToString("yyyyMMdd") : null);
 			request.AddParameter("Signature", Signature(queryBuilder.Query));
 			request.OnBeforeDeserialization = ErrorHandling;
 
@@ -146,16 +149,18 @@ namespace VI.AWS.AlexaTopSites
 				throw new ArgumentException("Path parameter shouldn't contain space characters. Space inside category name should be replaced with underscore.");
 
 			var request = new RestRequest(Method.GET);
-			var queryBuilder = new QueryBuilder(request);
-			queryBuilder.AddParameter("Action", "CategoryBrowse");
-			queryBuilder.AddParameter("AWSAccessKeyId", _key);
-			queryBuilder.AddParameter("SignatureMethod", "HmacSHA256");
-			queryBuilder.AddParameter("SignatureVersion", "2");
-			queryBuilder.AddParameter("Timestamp", Timestamp);
-			queryBuilder.AddParameter("ResponseGroup", responseGroup.ToQuery());
-			queryBuilder.AddParameter("Path", path);
-			queryBuilder.AddParameter("Descriptions", descriptions);
-			request.AddParameter("Signature", Signature(queryBuilder.Query));
+		    var queryBuilder = new QueryBuilder(request)
+		    {
+		        {"Action", "CategoryBrowse"},
+		        {"AWSAccessKeyId", _key},
+		        {"SignatureMethod", "HmacSHA256"},
+		        {"SignatureVersion", "2"},
+		        {"Timestamp", Timestamp},
+		        {"ResponseGroup", responseGroup.ToQuery()},
+		        {"Path", path},
+		        {"Descriptions", descriptions}
+		    };
+		    request.AddParameter("Signature", Signature(queryBuilder.Query));
 
 			request.OnBeforeDeserialization = ErrorHandling;
 			return Execute<CategoryBrowseResponse>(request);
@@ -188,20 +193,23 @@ namespace VI.AWS.AlexaTopSites
 
 			var sortByString = sortBy.HasValue ? sortBy.ToString() : null; 
 			var request = new RestRequest(Method.GET);
-			var queryBuilder = new QueryBuilder(request);
-			queryBuilder.AddParameter("Action", "CategoryListings");
-			queryBuilder.AddParameter("AWSAccessKeyId", _key);
-			queryBuilder.AddParameter("SignatureMethod", "HmacSHA256");
-			queryBuilder.AddParameter("SignatureVersion", "2");
-			queryBuilder.AddParameter("Timestamp", Timestamp);
-			queryBuilder.AddParameter("ResponseGroup", "Listings");
-			queryBuilder.AddParameter("Path", path);
-			queryBuilder.AddParameter("SortBy", sortByString);
-			queryBuilder.AddParameter("Recursive", recursive);
-			queryBuilder.AddParameter("Count", count);
-			queryBuilder.AddParameter("Start", start);
-			queryBuilder.AddParameter("Descriptions", descriptions);
-			request.AddParameter("Signature", Signature(queryBuilder.Query));
+
+		    var queryBuilder = new QueryBuilder(request)
+		    {
+		        {"Action", "CategoryListings"},
+		        {"AWSAccessKeyId", _key},
+		        {"SignatureMethod", "HmacSHA256"},
+		        {"SignatureVersion", "2"},
+		        {"Timestamp", Timestamp},
+		        {"ResponseGroup", "Listings"},
+		        {"Path", path},
+		        {"SortBy", sortByString},
+		        {"Recursive", recursive},
+		        {"Count", count},
+		        {"Start", start},
+		        {"Descriptions", descriptions}
+		    };
+		    request.AddParameter("Signature", Signature(queryBuilder.Query));
 			request.OnBeforeDeserialization = ErrorHandling;
 
 			return Execute<CategoryListingsResponse>(request);
@@ -221,18 +229,21 @@ namespace VI.AWS.AlexaTopSites
 		public SitesLinkingInResponse GetSitesLinkingIn(string url, int count = 10, int start = 0)
         {
             var request = new RestRequest(Method.GET);
-			var queryBuilder = new QueryBuilder(request);
 
-			queryBuilder.AddParameter("Action", "SitesLinkingIn");
-			queryBuilder.AddParameter("AWSAccessKeyId", _key);
-			queryBuilder.AddParameter("SignatureMethod", "HmacSHA256");
-			queryBuilder.AddParameter("SignatureVersion", "2");
-			queryBuilder.AddParameter("Timestamp", Timestamp);
-			queryBuilder.AddParameter("Url", url);
-			queryBuilder.AddParameter("ResponseGroup", "SitesLinkingIn");
-			queryBuilder.AddParameter("Count", count);
-			queryBuilder.AddParameter("Start", start);
-			request.AddParameter("Signature", Signature(queryBuilder.Query));
+            var queryBuilder = new QueryBuilder(request)
+            {
+                {"Action", "SitesLinkingIn"},
+                {"AWSAccessKeyId", _key},
+                {"SignatureMethod", "HmacSHA256"},
+                {"SignatureVersion", "2"},
+                {"Timestamp", Timestamp},
+                {"Url", url},
+                {"ResponseGroup", "SitesLinkingIn"},
+                {"Count", count},
+                {"Start", start}
+            };
+
+            request.AddParameter("Signature", Signature(queryBuilder.Query));
 			request.OnBeforeDeserialization = ErrorHandling;
 
 			return Execute<SitesLinkingInResponse>(request);
@@ -250,7 +261,7 @@ namespace VI.AWS.AlexaTopSites
         {
             get
             {
-                return DateTime.UtcNow.ToString(timeFormat, System.Globalization.CultureInfo.InvariantCulture);
+                return DateTime.UtcNow.ToString(TimeFormat, System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
